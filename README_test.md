@@ -2,36 +2,34 @@
 This is an overview of the analyses and code used in Shogren et al. to understand the evolutionary context and degree and direction of introgression between *Myzomela cardinalis* and *Myzomela tristrami*. 
 
 The software and programs used throughout the pipeline include:
-- trimgalore
-	- FastQC
-	- cutadapt
-	- pigz
-	- multiQC
-- bwa
-- samtools 
-- GATK (v4.1.7.0)
+- [trimgalore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)
+	- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+	- [cutadapt](https://cutadapt.readthedocs.io/en/stable/)
+	- [pigz](https://zlib.net/pigz/)
+	- [multiQC](https://multiqc.info/docs/)
+- [bwa](https://bio-bwa.sourceforge.net/)
+- [samtools/bcftools](http://samtools.github.io/bcftools/bcftools.html) 
+- [GATK](https://gatk.broadinstitute.org/hc/en-us) (v4.1.7.0)
 	- picard (v2.12.0)
-- qualimap
-- PSMC
-- vcf2phylip
-- popArt
-- python3
-- vcftools
-- bcftools
-- pixy
-- perl
-- plink1.9
-- ADMIXTURE
-- R (v4.1.1)
-	- snpRelate
-	- tidyverse
-- Dsuite
+- [qualimap](http://qualimap.conesalab.org/)
+- [PSMC](https://github.com/lh3/psmc)
+- [vcf2phylip](https://github.com/edgardomortiz/vcf2phylip)
+- [PopART](https://popart.maths.otago.ac.nz/)
+- [python3](https://www.python.org/downloads/)
+- [vcftools](https://vcftools.github.io/man_latest.html)
+- [pixy](https://pixy.readthedocs.io/en/latest/about.html)
+- [perl](https://www.perl.org/)
+- [plink1.9](https://www.cog-genomics.org/plink/)
+- [R](https://www.r-project.org/) (v4.1.1)
+	- [SNPRelate](https://www.bioconductor.org/packages/release/bioc/vignettes/SNPRelate/inst/doc/SNPRelate.html)
+- [ADMIXTURE](https://dalexander.github.io/admixture/index.html)
+- [Dsuite](https://github.com/millanek/Dsuite)
 
 ## Contents
-- raw read processing and alignment
-- aligned read filtering 
-- calling variants 
-- filtering variants
+- [raw read processing and alignment](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README_test.md#raw-read-processing-and-alignment)
+- [aligned read filtering](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README_test.md#aligned-read-filtering) 
+- [calling variants](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README_test.md#calling-variants) 
+- [filtering variants](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README_test.md#filtering-variants)
 - PSMC
 - mtDNA
 - pi, dxy, Fst, Tajima's D
