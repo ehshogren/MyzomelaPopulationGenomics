@@ -28,18 +28,19 @@ The software and programs used throughout the pipeline include:
 - [Dsuite](https://github.com/millanek/Dsuite)
 
 ## Contents
-- raw read processing and alignment
-- aligned read filtering
-- calling variants 
-- filtering variants
-- PSMC
-- mtDNA
-- pi, dxy, Fst, Tajima's D
+- [raw read processing and alignment](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#raw-read-)
+- [aligned read filtering](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#aligned-read-filtering)
+- [calling variants](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#calling-variants)
+- [filtering variants](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#filtering-variants)
+- [PSMC](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#psmc)
+- [mtDNA](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#mtdna)
+- [pi, dxy, Fst, Tajima's D](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#pi-dxy-fst-tajimas-d)
 - fixed/shared alleles
 - private alleles
-- PCA
-- ADMIXTURE
-- ABBA-BABA
+- [PCA](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#pca)
+- [ADMIXTURE](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#admixture)
+- [triangle plot](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#triangle-plot)
+- [ABBA-BABA](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#abba-baba)
 
 ## raw read processing and alignment
 samples were sequenced over 1-3 lanes. To maximize parallelization, I ran analyses in batches of about 20 individuals, waiting to concatenate files for individuals until later in the pipeline. Thus, many of the processing scripts loop over each sample/cell/lane ID. 
@@ -460,7 +461,7 @@ vcftools --gzvcf /Mt_v1_autos_mt_neoPAR_qd_varsite.vcf.gz \
 --out /Mt_v1_autos_mt_neoPAR_50kb_cardUgi
 ```
 ## fixed/shared alleles
-Used custom perl script to count the number of alleles fixed and shared between populations/species. Then ran for each pairwise comparison of population/species.
+Used [custom perl script](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/ParseVCF_fixed_shared.pl) to count the number of alleles fixed and shared between populations/species. Then ran for each pairwise comparison of population/species.
 
 Perl script - ParseVCF_fixed_shared.pl - parses a multi-sample gVCF file and, for two groups of individuals (as identified by a key), returns two tab-delineated text files, with CHROM\tPOS of 1) fixed differences and 2) shared polymorphisms. Also requires as input the minimum number of individuals in each group needed in order to make the call (fixed/poly), and a prefix for output files. Key file is a two column tab-delimited file with sample ID and population code.
 
@@ -476,7 +477,7 @@ $input_vcf Tristrami_High,Cardinalis_SYM $key_file 5 $prefix
 ```
 
 ## private alleles
-Used custom perl script to identify alleles private to parses a multi-sample gVCF file and, given a focal species with several locations (as identified by a key), plus at least one other species of interest, returns a tab-delineated text file, with CHROM\tPOS for each site where there is a private ALLELE in the focal SPECIES not present in the others (excluding putative hybrids), the identity of that allele, followed by one column for each location giving a Y/N for presence/absence of that private allele. The assumed format of the "key" file corresponds to the Myzo_WGS metadata files (full metadata), with the (currently!) important columns the 3rd (sample location), 4th (species) and 7th (sample name). Also requires as input the minimum number of individuals in each species (note: NOT location sample) needed in order to make the call as to whether an allele is private. As written, the program ignores any individual with the "species" name "Hybrid" in the key file. Name accordingly! Alternatively, if you give the program an incomplete key, it will ignore any sample in the vcf that it has not already seen in the key, so you could simply delete all hybrids (and possibly the "MO" cardinalis sample) from the key being used. Prints to stdout. 
+Used [custom perl script](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/ParseVCF_private.pl) to identify alleles private to parses a multi-sample gVCF file and, given a focal species with several locations (as identified by a key), plus at least one other species of interest, returns a tab-delineated text file, with CHROM\tPOS for each site where there is a private ALLELE in the focal SPECIES not present in the others (excluding putative hybrids), the identity of that allele, followed by one column for each location giving a Y/N for presence/absence of that private allele. The assumed format of the "key" file corresponds to the Myzo_WGS metadata files (full metadata), with the (currently!) important columns the 3rd (sample location), 4th (species) and 7th (sample name). Also requires as input the minimum number of individuals in each species (note: NOT location sample) needed in order to make the call as to whether an allele is private. As written, the program ignores any individual with the "species" name "Hybrid" in the key file. Name accordingly! Alternatively, if you give the program an incomplete key, it will ignore any sample in the vcf that it has not already seen in the key, so you could simply delete all hybrids (and possibly the "MO" cardinalis sample) from the key being used. Prints to stdout. 
 
 ```
 module load perl
@@ -569,7 +570,7 @@ vcftools --gzvcf /Mt_v1_autos_UgiThreeMak_qd_maf05_bi_nomiss_varsite_recode.vcf.
 
 tabix /Mt_v1_autos_Sym_qd_maf05_bi_nomiss_fixedSNP_recode.vcf.gz
 ```
-Next, pull VCF into R using vcfR and use introgress package to calculate interspecific heterozygosity and hybrid index. See Mt_v1_triangle.Rmd file for details.
+Next, pull VCF into R using vcfR and use introgress package to calculate interspecific heterozygosity and hybrid index. See [Mt_v1_triangle.Rmd](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/Mt_v1_triangleplot.Rmd) file for details.
 
 ## ABBA-BABA
 Used Dsuite program to assess introgression using ABBA-BABA analysis, *D* statistics and *f4* admixture ratios
