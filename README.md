@@ -35,8 +35,8 @@ The software and programs used throughout the pipeline include:
 - [PSMC](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#psmc)
 - [mtDNA](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#mtdna)
 - [pi, dxy, Fst, Tajima's D](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#pi-dxy-fst-tajimas-d)
-- fixed/shared alleles
-- private alleles
+- [fixed/shared alleles](https://github.com/ehshogren/MyzomelaPopulationGenomics#fixedshared-alleles)
+- [private alleles](https://github.com/ehshogren/MyzomelaPopulationGenomics#private-alleles)
 - [PCA](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#pca)
 - [ADMIXTURE](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#admixture)
 - [triangle plot](https://github.com/ehshogren/MyzomelaPopulationGenomics/blob/main/README.md#triangle-plot)
