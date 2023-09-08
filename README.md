@@ -24,6 +24,8 @@ The software and programs used throughout the pipeline include:
 - [plink1.9](https://www.cog-genomics.org/plink/)
 - [R](https://www.r-project.org/) (v4.1.1)
 	- [SNPRelate](https://www.bioconductor.org/packages/release/bioc/vignettes/SNPRelate/inst/doc/SNPRelate.html)
+	- [introgress](https://www.uwyo.edu/buerkle/software/introgress/)
+- [ADMIXTURE](https://dalexander.github.io/admixture/index.html)
 - [ADMIXTURE](https://dalexander.github.io/admixture/index.html)
 - [Dsuite](https://github.com/millanek/Dsuite)
 
