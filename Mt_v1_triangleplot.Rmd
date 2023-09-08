@@ -1,0 +1,177 @@
+---
+title: "Myzo_triangleplot"
+output: html_document
+---
+
+
+libraries
+```{r}
+library(Rmisc)
+library(ape)
+library(pegas)
+library(seqinr)
+library(ggplot2)
+library(adegenet)
+library(vcfR)
+library(introgress)
+library(data.table)
+library(tidyverse)
+```
+
+first need to look at output of weir-cockerham fst calculation in vcftools to see when snps are diagnostic between species
+restricted to biallelic, no missing sites
+
+```{r}
+UgiThree_High.fst <- read.table("Mt_v1_autos_UgiThree_High_qd_maf05_bi_nomiss_varsite.weir.fst", header = TRUE)
+```
+
+```{r}
+Fst_0.9 <- UgiThree_High.fst %>%
+  filter(WEIR_AND_COCKERHAM_FST > 0.9)
+```
+
+```{r}
+Fst_0.95 <- UgiThree_High.fst %>%
+  filter(WEIR_AND_COCKERHAM_FST >= 0.95)
+```
+
+```{r}
+Fst_fixed <- UgiThree_High.fst %>%
+  filter(WEIR_AND_COCKERHAM_FST == 1)
+```
+
+export snp ID file for making VCFs with only diagnostic SNPs
+
+```{r}
+Fst_fixed_snps <- Fst_fixed %>%
+  dplyr::select(CHROM, POS)
+```
+
+
+```{r}
+write.table(Fst_fixed_snps,"diagSNPs_Fstfixed_UgiThreeHigh_qd_maf05_bi_nomiss.txt", col.names = FALSE, row.names = FALSE, quote = FALSE)
+```
+
+
+#Autosomes, diagnostic SNPs with Fst fixed
+
+read in vcf that has been filtered and only has snps fixed between allopatric pops
+```{r}
+Sym_auto_diagSNPs_filt_vcfR <- read.vcfR("/Mt_v1_autos_Sym_qd_maf05_bi_nomiss_fixedSNP_recode.vcf.gz")
+
+CardAllo_auto_diagSNPs_filt_vcfR <- read.vcfR("/Mt_v1_autos_UgiThree_qd_maf05_bi_nomiss_fixedSNP_recode.vcf.gz")
+  
+TrisAllo_auto_diagSNPs_filt_vcfR <- read.vcfR("/Mt_v1_autos_High_qd_maf05_bi_nomiss_fixedSNP_recode.vcf.gz")
+```
+
+```{r}
+Sym_auto_diagSNPs_filt.gt <- extract.gt(Sym_auto_diagSNPs_filt_vcfR)
+
+CardAllo_auto_diagSNPs_filt.gt <- extract.gt(CardAllo_auto_diagSNPs_filt_vcfR)
+
+TrisAllo_auto_diagSNPs_filt.gt <- extract.gt(TrisAllo_auto_diagSNPs_filt_vcfR)
+```
+
+
+```{r}
+loci.dat <- as.data.frame(Sym_auto_diagSNPs_filt.gt) %>%
+  rownames_to_column("locus") %>%
+  dplyr::select(locus) %>%
+  mutate(type = "c")
+```
+
+subset to phenotypic cardinalis, phenotypic tristrami, phenotypic hybrids
+```{r}
+CS_auto_diagSNPs_filt.gt <- as.data.frame(Sym_auto_diagSNPs_filt.gt) %>%
+  dplyr::select(starts_with("CS")) %>%
+  as.matrix()
+
+TS_auto_diagSNPs_filt.gt <- as.data.frame(Sym_auto_diagSNPs_filt.gt) %>%
+  dplyr::select(starts_with("TS") | "MH691") %>%
+  dplyr::select(-one_of("TS690")) %>%
+  as.matrix()
+
+MH_auto_diagSNPs_filt.gt <- as.data.frame(Sym_auto_diagSNPs_filt.gt) %>%
+  dplyr::select(starts_with("MH") | "TS690") %>%
+  dplyr::select(-one_of("MH691")) %>%
+  as.matrix()
+```
+
+
+preparing the data - doing each phenotypic group separately so I will know and be able to plot them separately
+
+#Sympatric cardinalis
+```{r}
+CS_auto_filt_introgress_nofix.dat <- prepare.data(CS_auto_diagSNPs_filt.gt, loci.data = loci.dat, fixed = FALSE, pop.id = FALSE, ind.id = FALSE, parental1 = CardAllo_auto_diagSNPs_filt.gt, parental2 = TrisAllo_auto_diagSNPs_filt.gt)
+```
+
+okay, now try to estimate max likelihood estimate of hybrid index
+```{r}
+CS_auto_nofix_h <- est.h(CS_auto_filt_introgress_nofix.dat, loci.data = loci.dat, fixed = FALSE)
+```
+
+calculate interspecific heterozygosity
+```{r}
+CS_auto_filt_nofix_inthet <- calc.intersp.het(CS_auto_filt_introgress_nofix.dat)
+```
+
+
+```{r}
+CS_auto_filt_introgress_fix.dat <- prepare.data(CS_auto_diagSNPs_filt.gt, loci.data = loci.dat, fixed = TRUE, pop.id = FALSE, ind.id = FALSE, parental1 = "1", parental2 = "0")
+```
+
+okay, now try to estimate max likelihood estimate of hybrid index
+```{r}
+CS_auto_fix_h <- est.h(CS_auto_filt_introgress_fix.dat, loci.data = loci.dat, fixed = TRUE, p1.allele =  "1", p2.allele = "0")
+```
+
+calculate interspecific heterozygosity
+```{r}
+CS_auto_filt_fix_inthet <- calc.intersp.het(CS_auto_filt_introgress_fix.dat)
+```
+
+#Sympatric tristrami
+```{r}
+TS_auto_filt_introgress_fix.dat <- prepare.data(TS_auto_diagSNPs_filt.gt, loci.data = loci.dat, fixed = TRUE, pop.id = FALSE, ind.id = FALSE, parental1 = "1", parental2 = "0")
+```
+
+okay, now try to estimate max likelihood estimate of hybrid index
+```{r}
+TS_auto_filt_fix_h <- est.h(TS_auto_filt_introgress_fix.dat, loci.data = loci.dat, fixed = TRUE, p1.allele = "1", p2.allele = "0")
+```
+
+calculate interspecific heterozygosity
+```{r}
+TS_auto_filt_fix_inthet <- calc.intersp.het(TS_auto_filt_introgress_fix.dat)
+```
+
+
+#phenotypic hybrids
+```{r}
+MH_auto_filt_fix_introgress.dat <- prepare.data(MH_auto_diagSNPs_filt.gt, loci.data = loci.dat, fixed = TRUE, pop.id = FALSE, ind.id = FALSE, parental1 = "1", parental2 = "0")
+```
+
+now estimate max likelihood estimate of hybrid index
+```{r}
+MH_auto_filt_fix_h <- est.h(MH_auto_filt_fix_introgress.dat, loci.data = loci.dat, fixed = TRUE, p1.allele = "1", p2.allele = "0")
+```
+
+calculate interspecific heterozygosity
+```{r}
+MH_auto_filt_fix_inthet <- calc.intersp.het(MH_auto_filt_fix_introgress.dat)
+```
+
+#plot
+```{r}
+png(file = "/autos_filt_fix_legend.png", width =6, height =5, units = "in", res = 300)
+par(mar=c(5,5,2,2))
+plot (MH_auto_filt_fix_inthet,MH_auto_filt_fix_h$h, xlab="Hybrid Index",ylab="Interspecific Heterozygosity", type="n", bty="l",ylim=c(-0.05,1.05), xlim=c(-0.05,1.05))
+legend(-0.1,1.15, c(expression(italic("M. cardinalis")), expression(italic("M. tristrami")),"Phenotypic hybrid"),col=c("#EF2020","#262627","#76B7B2"), pch=c(20,20,20), box.lty=0,cex=1.2,bg=0)
+segments(0,0, 0.5, 1, lwd=3, col="black")
+segments(0.5,1, 1,0, lwd=3, col="black")
+points(CS_auto_fix_h$h,CS_auto_filt_fix_inthet,pch=19, col=alpha("#EF2020", 0.6),cex=2)
+points(TS_auto_filt_fix_h$h,TS_auto_filt_fix_inthet, pch=19, col=alpha("#262627",0.6),cex=2)
+points(MH_auto_filt_fix_h$h,MH_auto_filt_fix_inthet, pch=19, col=alpha("#76B7B2",0.6),cex=2)
+dev.off()
+```
+
